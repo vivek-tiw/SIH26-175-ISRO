@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DepthWizard: Single-View Height Estimation & 3D Flythrough | ISRO</title>
+  
+  <!-- Font Awesome for functional action controls -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="isro-serif-body">
+
+  <!-- =========================================================================
+       1. TOP UTILITY BAR (Times New Roman / Official Standards)
+       ========================================================================= -->
+  <div class="gov-topbar">
+    <div class="topbar-inner">
+      <div class="gov-topbar-left">
+        <span class="gov-text">Government of India / भारत सरकार</span>
+        <span class="topbar-sep">|</span>
+        <a href="#mainContent" class="topbar-link">Skip to main content</a>
+        <span class="topbar-sep">|</span>
+        <a href="#" class="topbar-link">Screen Reader Access</a>
+      </div>
+      
+      <div class="gov-topbar-right">
+        <div class="font-resizer-group">
+          <button class="font-btn" id="btnFontMinus" title="Decrease font size">A-</button>
+          <button class="font-btn active" id="btnFontReset" title="Default font size">A</button>
+          <button class="font-btn" id="btnFontPlus" title="Increase font size">A+</button>
+        </div>
+        <span class="topbar-sep">|</span>
+        <button class="lang-toggle-btn" id="btnLangToggle">
+          <span id="langLabel">हिन्दी</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       2. MAIN ISRO BRAND HEADER (Centered Identity, Times Serif Typography)
+       ========================================================================= -->
+  <header class="isro-brand-header">
+    <div class="header-inner">
+      <!-- Leftmost Side Project Box -->
+      <div class="header-left-badge">
+        <div class="header-project-box">
+          <span class="project-box-brand">DepthWizard</span>
+          <span class="project-box-sep">-</span>
+          <span class="project-box-desc">Single-View Height Estimation and 3D Flythrough</span>
+        </div>
+      </div>
+
+      <!-- Center ISRO Identity -->
+      <div class="header-center-identity">
+        <div class="isro-logo-title-row">
+          <!-- Official ISRO Vector Logo -->
+          <div class="isro-vector-logo">
+            <svg viewBox="0 0 110 90" width="110" height="92">
+              <path d="M18 72 Q50 45 78 8 L64 38 Q45 54 18 72 Z" fill="#f97316" />
+              <path d="M78 8 Q84 14 74 24 Q68 18 78 8 Z" fill="#0284c7" />
+              <circle cx="70" cy="20" r="3.5" fill="#0284c7" />
+              <text x="56" y="58" font-family="'Times New Roman', Times, serif" font-size="26" font-weight="bold" fill="#0284c7" letter-spacing="0.5">isro</text>
+              <text x="14" y="58" font-family="'Times New Roman', Times, serif" font-size="22" font-weight="bold" fill="#f97316">इसरो</text>
+            </svg>
+          </div>
+
+          <!-- Official Department Names in Times New Roman -->
+          <div class="isro-org-titles">
+            <div class="org-hindi">भारतीय अंतरिक्ष अनुसंधान संगठन, अंतरिक्ष विभाग</div>
+            <div class="org-english">Indian Space Research Organisation, Department of Space</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Balanced Spacer -->
+      <div class="header-right-spacer"></div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       3. NAVIGATION BAR (With 3-Line Icon & "Samples" on Leftmost of Tab)
+       ========================================================================= -->
+  <nav class="isro-navbar">
+    <div class="navbar-inner">
+      <div class="nav-left-group">
+        <!-- 3-Line Icon with "Samples" beside it on leftmost of tab -->
+        <button class="nav-samples-btn" id="btnHamburger" title="Sample Benchmark Datasets">
+          <i class="fa-solid fa-bars"></i>
+          <span>Samples</span>
+        </button>
+
+        <ul class="nav-links-list">
+          <li class="nav-item active"><a href="#" class="nav-link">Home</a></li>
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link">About <i class="fa-solid fa-angle-down"></i></a>
+            <div class="dropdown-pane">
+              <a href="#">ISRO Overview</a>
+              <a href="#">Earth Observation Centres</a>
+              <a href="#">Disaster Management Support (DMS)</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link">Geospatial Services <i class="fa-solid fa-angle-down"></i></a>
+            <div class="dropdown-pane">
+              <a href="#">Bhoonidhi Open Data Archive</a>
+              <a href="#">MOSDAC Meteorological Portal</a>
+              <a href="#">CartoDEM / High-Res DSM Data</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link">Programmes <i class="fa-solid fa-angle-down"></i></a>
+            <div class="dropdown-pane">
+              <a href="#">Earth Observation Missions</a>
+              <a href="#">UAV Photogrammetry Surveys</a>
+              <a href="#">Smart India Hackathon (SIH 2024)</a>
+            </div>
+          </li>
+          <li class="nav-item"><a href="#" class="nav-link" id="navExportTrigger">Export 3D Products</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="navbar-right-info">
+        <span class="info-dot"></span>
+        <span>Photogrammetric Operational Engine</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Notice Strip -->
+  <div class="notice-strip">
+    <div class="notice-inner">
+      <div class="notice-badge">NOTICE</div>
+      <div class="notice-text">
+        DepthWizard Engine Active: Single-view monocular 3D Digital Surface Model (DSM) generation, metric GCP calibration & interactive disaster simulation enabled.
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MAIN SCROLLABLE CONTENT (Times New Roman / 20-25% Larger Scale)
+       ========================================================================= -->
+  <main class="page-content-container" id="mainContent">
+
+    <!-- Slide-out Drawer / Overlay Menu for Sample Benchmark Datasets -->
+    <div class="dataset-drawer-backdrop" id="datasetDrawerBackdrop" style="display: none;">
+      <div class="dataset-slide-drawer">
+        <div class="drawer-top-bar">
+          <div class="drawer-heading-text">Sample Benchmark Datasets</div>
+          <button class="drawer-close-icon" id="btnCloseDrawer" title="Close menu">&times;</button>
+        </div>
+        <div class="drawer-datasets-list" id="fileTreeList">
+          <div class="drawer-dataset-item active" data-preset="urban_cbd" data-name="area_sector_04.tif">
+            <div class="item-filename">area_sector_04.tif</div>
+            <div class="item-meta">Metropolitan High-Density CBD (Bengaluru)</div>
+          </div>
+          <div class="drawer-dataset-item" data-preset="himalayas" data-name="himalayan_ridge_glacier.tif">
+            <div class="item-filename">himalayan_ridge_glacier.tif</div>
+            <div class="item-meta">Himalayan Glacial Ridge (Nanda Devi Basin)</div>
+          </div>
+          <div class="drawer-dataset-item" data-preset="volcano" data-name="barren_island_caldera.tif">
+            <div class="item-filename">barren_island_caldera.tif</div>
+            <div class="item-meta">Volcanic Caldera & Coast (Barren Island)</div>
+          </div>
+          <div class="drawer-dataset-item" data-preset="river_canyon" data-name="western_ghats_canyon.tif">
+            <div class="item-filename">western_ghats_canyon.tif</div>
+            <div class="item-meta">Deep River Gorge (Western Ghats)</div>
+          </div>
+          <div class="drawer-dataset-item" data-preset="quarry_mine" data-name="jharia_opencast_mine.tif">
+            <div class="item-filename">jharia_opencast_mine.tif</div>
+            <div class="item-meta">Open-Cast Terraced Mine (Jharia Basin)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DUAL COLUMN ROW: 3D Terrain Workspace (Left) + Pipeline Status & Geodetic Validation (Right) -->
+    <div class="workspace-dual-grid">
+
+      <!-- COLUMN 1: 3D Terrain Workspace Box -->
+      <section class="portal-card-box workspace-section">
+        <div class="box-header-bar">
+          <!-- Clean Heading Text (No icon or box before heading) -->
+          <div class="clean-heading">3D Terrain Workspace</div>
+
+          <div class="workspace-toolbar">
+            <button class="tool-btn" id="btnGlobeView" title="Top-Down Planimetric Ortho View">
+              <i class="fa-solid fa-globe"></i> Top-Down
+            </button>
+            <button class="tool-btn" id="btnPanReset" title="Center & Reset View">
+              <i class="fa-solid fa-arrows-rotate"></i> Reset
+            </button>
+            <button class="tool-btn" id="btnFlythrough">
+              <i class="fa-solid fa-plane"></i> 3D Flythrough
+            </button>
+
+            <!-- View Modes Dropdown -->
+            <div class="dropdown-wrapper">
+              <button class="tool-btn" id="btnViewModes">
+                View Modes <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <div class="light-dropdown-menu" id="viewModeMenu">
+                <div class="light-menu-item active" data-tex="rgb">Optical Textured</div>
+                <div class="light-menu-item" data-tex="terrain">DSM Spectrum (Hypsometric)</div>
+                <div class="light-menu-item" data-tex="turbo">Turbo Scientific Scale</div>
+                <div class="light-menu-item" data-tex="hillshade">Shaded Relief (Hillshade)</div>
+                <div class="light-menu-item" data-tex="diff_error">Error Heatmap (|Δh|)</div>
+                <div class="light-menu-item" data-tex="wireframe">Wireframe Grid</div>
+              </div>
+            </div>
+
+            <!-- Measurement Tools Dropdown -->
+            <div class="dropdown-wrapper">
+              <button class="tool-btn" id="btnMeasureTools">
+                Tools <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <div class="light-dropdown-menu" id="measureMenu">
+                <div class="light-menu-item" id="menuSliceProfile">Slice Cross-Section Transect</div>
+                <div class="light-menu-item" id="menuExportMesh">Export 3D Products (OBJ/STL/GeoTIFF)</div>
+                <div class="light-menu-item" id="menuExaggeration">Adjust Z-Exaggeration</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3D Canvas Viewport Box -->
+        <div class="canvas-viewport-box" id="canvas3dContainer">
+          <!-- Interactive Transect Slice Prompt -->
+          <div class="transect-prompt-box" id="transectPrompt" style="display: none;">
+            Click two points on the 3D terrain to draw elevation profile slice line (A → B)
+          </div>
+
+          <!-- Flythrough HUD -->
+          <div class="drone-hud-box" id="droneHud" style="display: none;">
+            <div class="hud-bar-clean">
+              <span>ALT (ASL): <strong id="hudAlt">342.5 M</strong></span>
+              <span>SPEED: <strong id="hudSpeed">78 KM/H</strong></span>
+              <span>HEADING: <strong id="hudHeading">325° NW</strong></span>
+            </div>
+            <div class="hud-hint">Controls: <strong>W/S</strong> Thrust • <strong>A/D</strong> Yaw • <strong>Space/Shift</strong> Climb/Descend • <strong>Esc</strong> Exit</div>
+          </div>
+
+          <!-- Clean Loading Overlay -->
+          <div class="loading-overlay-box" id="loadingOverlay" style="display: none;">
+            <div class="spinner-box"></div>
+            <div class="loading-title-box" id="loadingText">Processing Depth Estimation...</div>
+            <div class="loading-desc-box">Calibrating metric elevation matrix and generating 3D terrain</div>
+          </div>
+        </div>
+
+        <!-- Cross Section Drawer (inside workspace card) -->
+        <div class="slice-drawer-box" id="bottomSliceDrawer" style="display: none;">
+          <div class="slice-drawer-header">
+            <span>Cross-Section Elevation Transect (A → B)</span>
+            <button class="slice-close-btn" onclick="document.getElementById('bottomSliceDrawer').style.display='none'">&times;</button>
+          </div>
+          <div class="slice-canvas-wrapper">
+            <canvas id="profileChartCanvas" width="960" height="125"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUMN 2: Pipeline Status & Geodetic Accuracy Validation (SIH PS 175) -->
+      <section class="portal-card-box metrics-summary-section">
+        <div class="box-header-bar">
+          <div class="clean-heading">Pipeline Status & Geodetic Accuracy Validation (SIH PS 175)</div>
+        </div>
+
+        <div class="box-inner-body metrics-dossier-body">
+          <!-- Live Validation Metrics Cards (3x2 Grid) -->
+          <div class="metrics-cards-row">
+            <div class="metric-stat-box">
+              <div class="stat-label">Pipeline Status</div>
+              <div class="stat-value text-green" id="metricStatusBox">IDLE</div>
+              <div class="stat-sub">Photogrammetric engine ready</div>
+            </div>
+
+            <div class="metric-stat-box">
+              <div class="stat-label">RMSE (Root Mean Square)</div>
+              <div class="stat-value text-blue" id="valRmse">±1.24 m</div>
+              <div class="stat-sub">SIH Target: &lt; 3.0 m</div>
+            </div>
+
+            <div class="metric-stat-box">
+              <div class="stat-label">MAE (Mean Absolute Error)</div>
+              <div class="stat-value text-blue" id="valMae">0.96 m</div>
+              <div class="stat-sub">Mean vertical deviation</div>
+            </div>
+
+            <div class="metric-stat-box">
+              <div class="stat-label">NMAD (Norm. Median Dev)</div>
+              <div class="stat-value text-blue" id="valNmad">1.12 m</div>
+              <div class="stat-sub">Outlier-robust geodetic metric</div>
+            </div>
+
+            <div class="metric-stat-box">
+              <div class="stat-label">LE90 (90% Confidence)</div>
+              <div class="stat-value text-blue" id="valLe90">2.14 m</div>
+              <div class="stat-sub">Linear error 90th percentile</div>
+            </div>
+
+            <div class="metric-stat-box">
+              <div class="stat-label">Accuracy Tier</div>
+              <div class="stat-value text-green" id="valGrade">Survey Grade</div>
+              <div class="stat-sub">Tier 1 Sub-meter qualified</div>
+            </div>
+          </div>
+
+          <!-- SIH PS 175 Technical Specifications & Benchmark Dossier -->
+          <div class="sih-ps-dossier-container">
+            
+            <!-- Section A: Background -->
+            <div class="dossier-card">
+              <div class="dossier-title">Background & Operational Need</div>
+              <div class="dossier-content">
+                Accurate Digital Elevation Models (DEMs) and Digital Surface Models (DSMs) are fundamental to urban planning, disaster management, and military reconnaissance. Traditionally, elevation data is acquired through stereo-imaging pairs, LiDAR, or Interferometric Synthetic Aperture Radar (InSAR). These approaches can be cost-prohibitive, dependent on specific sensor availability, and computationally intensive. Single-view height estimation offers an agile alternative, but foundational monocular depth models are trained largely on natural egocentric imagery and predict relative depth. When applied to remote sensing, they face domain gaps, structural variations, and a lack of absolute-scale mapping. Converting relative depth into metric elevation remains a critical challenge, alongside the operational need to transform static elevation profiles into interactive 3D assets that can be navigated in real time.
+              </div>
+            </div>
+
+            <!-- Section B: Pipeline Description & Dual Modality -->
+            <div class="dossier-card">
+              <div class="dossier-title">Pipeline Architecture & Description</div>
+              <div class="dossier-content">
+                Develop an end-to-end software pipeline that transforms single-view optical RGB remote-sensing images into high-precision elevation maps. The framework supports dual-modality processing:
+                <ul class="dossier-list">
+                  <li><strong>Non-Georeferenced RGB Imagery (e.g., PNG or JPG):</strong> Produces a Relative Digital Surface Model (rDSM) for images without spatial metadata.</li>
+                  <li><strong>Georeferenced RGB Imagery (e.g., GeoTIFF):</strong> Produces an Absolute Digital Surface Model (DSM) with calibrated metric height values for images containing coordinate-system metadata.</li>
+                </ul>
+                The solution uses a pre-trained monocular depth-estimation backbone to generate initial relative-depth maps. For georeferenced imagery, lower-resolution DEM sources (SRTM / Copernicus 30m) or Ground Control Points (GCPs) map scale-agnostic features to absolute metric elevations. The pipeline projects original optical textures onto the 3D terrain mesh for real-time aerial navigation in Three.js.
+              </div>
+            </div>
+
+            <!-- Section C: Key Milestones -->
+            <div class="dossier-card">
+              <div class="dossier-title">Key Implementation Milestones</div>
+              <div class="dossier-content">
+                <ul class="dossier-list">
+                  <li><strong>Elevation Extraction:</strong> Robust pre-trained monocular depth models (Depth Anything V2, MiDaS DPT) extract structural geometry from single-view optical imagery.</li>
+                  <li><strong>Scale Calibration:</strong> Automated module converts relative depth to absolute metric height using scene statistics, reference DEMs, and GCP alignment.</li>
+                  <li><strong>Visualization Layer:</strong> Immersive, real-time rendering engine converting texture and derived elevation maps into a navigable 3D environment with drone flight controls.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Section D: Evaluation Criteria & Deliverables -->
+            <div class="dossier-card">
+              <div class="dossier-title">Evaluation Criteria & Expected Solution</div>
+              <div class="dossier-content">
+                <div class="dossier-split-grid">
+                  <div class="dossier-subbox">
+                    <strong>DSM Accuracy & Validation (50%)</strong>
+                    <span>Benchmarking RMSE, MAE, NMAD, and LE90 against LiDAR ground truth across urban, alpine, volcanic, and canyon landscapes.</span>
+                  </div>
+                  <div class="dossier-subbox">
+                    <strong>Rendering & Flythrough (50%)</strong>
+                    <span>Projection accuracy, photorealistic texture mapping, smooth first-person drone navigation, transect slicing, and standalone stability.</span>
+                  </div>
+                </div>
+                <div class="dossier-deliverables-note">
+                  <strong>Expected Deliverables:</strong> Fully integrated elevation estimation module supporting PNG/JPG/GeoTIFF raster exports + interactive 3D flythrough platform with live metric verification audits.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- SECTION 2: Large Rectangular Upload Box -->
+    <section class="portal-card-box upload-section">
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/tiff,.tif,.tiff,.jpg,.png" hidden>
+      <div class="large-upload-panel" id="uploadBoxTrigger" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-large-plus">+</div>
+        <div class="upload-large-title">Upload Optical RGB Image / GeoTIFF</div>
+        <div class="upload-large-subtitle">PNG, JPG, TIFF or GeoTIFF (Single-view aerial, satellite, or drone imagery)</div>
+      </div>
+
+      <div class="upload-sub-controls">
+        <input type="file" id="refDemInput" accept=".tif,.tiff,.png,.jpg" hidden>
+        <button class="btn-secondary-load" id="btnLoadReference" onclick="document.getElementById('refDemInput').click()">
+          Load DEM / GCP Reference (Optional Ground Truth)
+        </button>
+
+        <div class="loaded-file-status-pill">
+          <span class="status-dot"></span>
+          <span class="status-pill-text" id="statusImageLoaded">Image Loaded: [ GeoTIFF - EPSG:4326 ]</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Processing Configuration Panel (No decorative icons in heading) -->
+    <section class="portal-card-box config-section">
+      <div class="box-header-bar">
+        <div class="clean-heading">Elevation Processing & Calibration Configuration</div>
+      </div>
+
+      <div class="box-inner-body">
+        <div class="config-grid-row">
+          <div class="config-field-group">
+            <label class="config-label">AI Depth Estimation Engine:</label>
+            <select id="selectDepthEngine" class="config-select">
+              <option value="depth-anything-v2" selected>Depth Anything V2 (Vision Foundation Model)</option>
+              <option value="midas">MiDaS DPT Large (Dense Prediction Transformer)</option>
+              <option value="cv-sfs-fallback">Shape-from-Shading (Fast Photogrammetric CV)</option>
+            </select>
+          </div>
+
+          <div class="config-field-group">
+            <label class="config-label">Geodetic Calibration Reference:</label>
+            <select id="selectCalibrationSource" class="config-select">
+              <option value="srtm" selected>SRTM 30m Global DEM (Least-Squares Scale & Shift)</option>
+              <option value="copernicus">Copernicus 30m GLO-30 Reference DEM</option>
+              <option value="gcp">Ground Control Points (GCP Polynomial Fit)</option>
+              <option value="relative">Relative Disparity Only (rDSM)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Primary Action Button -->
+        <button class="btn-run-pipeline" id="btnRunPipeline">
+          Run Estimation Pipeline
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       FOOTER (Times New Roman / Official Government Standards)
+       ========================================================================= -->
+  <footer class="isro-portal-footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span class="status-indicator-dot"></span>
+        <span>Pipeline Status: <strong class="text-green" id="footerPipelineStatus">IDLE</strong></span>
+      </div>
+
+      <div class="footer-center">
+        <span id="footerEvalMetrics">Evaluation Metrics: RMSE ±1.24m | Survey Grade Certified</span>
+      </div>
+
+      <div class="footer-right">
+        <span>Official GoI GIGW Compliant</span>
+        <span class="footer-sep">|</span>
+        <span>ISRO Department of Space</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Export Modal -->
+  <div class="modal-backdrop-light" id="exportModal" style="display: none;">
+    <div class="modal-box-light">
+      <div class="modal-header-light">
+        <div class="modal-title-light">Export 3D Mesh & Geospatial Products</div>
+        <button class="modal-close-light" onclick="document.getElementById('exportModal').style.display='none'">&times;</button>
+      </div>
+      <div class="modal-body-light">
+        <div class="export-grid-light">
+          <div class="export-item-card" onclick="downloadProduct('obj')">
+            <div class="exp-title-light">Wavefront OBJ (.obj + .mtl)</div>
+            <div class="exp-desc-light">3D mesh geometry with UV coordinate mapping & texture projection</div>
+            <button class="btn-exp-download">Download OBJ</button>
+          </div>
+
+          <div class="export-item-card" onclick="downloadProduct('stl')">
+            <div class="exp-title-light">Binary STL (.stl)</div>
+            <div class="exp-desc-light">Solid 3D printable mesh with reinforced base for 3D printing & CAD</div>
+            <button class="btn-exp-download">Download STL</button>
+          </div>
+
+          <div class="export-item-card" onclick="downloadProduct('ply')">
+            <div class="exp-title-light">Point Cloud PLY (.ply)</div>
+            <div class="exp-desc-light">Full 3D point cloud with RGB vertex color coordinates</div>
+            <button class="btn-exp-download">Download PLY</button>
+          </div>
+
+          <div class="export-item-card" onclick="downloadProduct('geotiff')">
+            <div class="exp-title-light">32-Bit Float GeoTIFF (.tif)</div>
+            <div class="exp-desc-light">GIS-ready raster with metric elevation values for QGIS, ArcGIS & GDAL</div>
+            <button class="btn-exp-download">Download GeoTIFF</button>
+          </div>
+
+          <div class="export-item-card" onclick="downloadProduct('heightmap_png')">
+            <div class="exp-title-light">16-Bit Grayscale Heightmap (.png)</div>
+            <div class="exp-desc-light">65,536-level high dynamic range heightmap for Unity, Unreal & Blender</div>
+            <button class="btn-exp-download">Download 16-Bit PNG</button>
+          </div>
+
+          <div class="export-item-card" onclick="downloadProduct('metrics_csv')">
+            <div class="exp-title-light">Accuracy Audit Report (.csv)</div>
+            <div class="exp-desc-light">Comprehensive geodetic verification log with RMSE, MAE, NMAD, LE90 metrics</div>
+            <button class="btn-exp-download">Download CSV</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- External Libraries: Three.js & OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Application Modules -->
+  <script src="js/elevation_chart.js"></script>
+  <script src="js/viewer3d.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
