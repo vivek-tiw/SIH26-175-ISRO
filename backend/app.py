@@ -14,7 +14,7 @@ import io
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse, JSONResponse, FileResponse
+from fastapi.responses import StreamingResponse, JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -571,7 +571,47 @@ async def export_data(export_type: str, session_id: str):
     else:
         raise HTTPException(status_code=400, detail="Invalid export type")
 
-# Serve frontend static assets
-frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend"))
-if os.path.exists(frontend_dir):
-    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+def get_frontend_dir() -> Optional[str]:
+    candidates = [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend")),
+        os.path.abspath(os.path.join(os.getcwd(), "frontend")),
+        os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "frontend")),
+        "/var/task/frontend",
+        "frontend"
+    ]
+    for c in candidates:
+        if os.path.exists(c) and os.path.exists(os.path.join(c, "index.html")):
+            return c
+    return None
+
+frontend_dir = get_frontend_dir()
+
+@app.get("/", response_class=FileResponse)
+async def serve_index():
+    f_dir = get_frontend_dir()
+    if f_dir:
+        index_file = os.path.join(f_dir, "index.html")
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+    return HTMLResponse("<h1>TerraFly Engine</h1><p>Backend is active. Frontend index.html not found.</p>")
+
+@app.get("/css/{file_path:path}")
+async def serve_css(file_path: str):
+    f_dir = get_frontend_dir()
+    if f_dir:
+        target = os.path.join(f_dir, "css", file_path)
+        if os.path.exists(target):
+            return FileResponse(target, media_type="text/css")
+    raise HTTPException(status_code=404, detail="CSS file not found")
+
+@app.get("/js/{file_path:path}")
+async def serve_js(file_path: str):
+    f_dir = get_frontend_dir()
+    if f_dir:
+        target = os.path.join(f_dir, "js", file_path)
+        if os.path.exists(target):
+            return FileResponse(target, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="JS file not found")
+
+if frontend_dir and os.path.exists(frontend_dir):
+    app.mount("/frontend", StaticFiles(directory=frontend_dir, html=True), name="frontend_static")

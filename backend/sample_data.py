@@ -210,10 +210,10 @@ class SampleDataManager:
         gt_dem[int(size*0.68):int(size*0.89), int(size*0.68):int(size*0.89)] -= 3.0
 
         gcps = [
-            {"name": "GCP-1 (Tower A Rooftop)", "x": 80, "y": 80, "z": round(float(gt_dem[80, 80]), 2)},
-            {"name": "GCP-2 (Central Boulevard)", "x": 200, "y": 200, "z": round(float(gt_dem[200, 200]), 2)},
-            {"name": "GCP-3 (Tech Skyscraper Heli-pad)", "x": 360, "y": 140, "z": round(float(gt_dem[140, 360]), 2)},
-            {"name": "GCP-4 (City Park Lake Surface)", "x": 400, "y": 400, "z": round(float(gt_dem[400, 400]), 2)}
+            {"name": "GCP-1 (Tower A Rooftop)", "x": int(size * 0.156), "y": int(size * 0.156), "z": round(float(gt_dem[int(size*0.156), int(size*0.156)]), 2)},
+            {"name": "GCP-2 (Central Boulevard)", "x": int(size * 0.39), "y": int(size * 0.39), "z": round(float(gt_dem[int(size*0.39), int(size*0.39)]), 2)},
+            {"name": "GCP-3 (Tech Skyscraper Heli-pad)", "x": int(size * 0.70), "y": int(size * 0.27), "z": round(float(gt_dem[int(size*0.27), int(size*0.70)]), 2)},
+            {"name": "GCP-4 (City Park Lake Surface)", "x": int(size * 0.78), "y": int(size * 0.78), "z": round(float(gt_dem[int(size*0.78), int(size*0.78)]), 2)}
         ]
 
         return {

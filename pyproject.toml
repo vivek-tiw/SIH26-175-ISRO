@@ -1,2 +1,16 @@
-[tool.vercel]
-entrypoint = "backend.app:app"
+[project]
+name = "terrafly"
+version = "1.0.0"
+description = "3D elevation mapping from single-view imagery"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.22.0",
+    "python-multipart>=0.0.6",
+    "numpy>=1.24.0",
+    "pillow>=9.5.0",
+    "scipy>=1.10.0",
+    "tifffile>=2023.4.12",
+    "requests>=2.31.0",
+    "pydantic>=2.0.0",
+]
